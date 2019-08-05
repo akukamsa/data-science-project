@@ -1,0 +1,2 @@
+# data-science-project
+ The project was made to analyse the crimes in the past few decades in India. The outcome and the results were quite shocking as can be clearly seen in the presentation and plots. The basic requirement was a Hadoop Cluster working on top of windows using VMware and plotting using Tableau. The data was handles using both PIG and HIVE. This project helped me learn and apply the techniques I learned in a productive way
