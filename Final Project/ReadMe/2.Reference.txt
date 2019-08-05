@@ -1,0 +1,48 @@
+﻿FOR TABLE 2
+==================================
+Area_Name areaname,
+Year year,
+Sub_group subgroup,
+
+CPA_-_Cases_Registered cpa_registered,
+CPA_-_Cases_Reported_for_Dept._Action cpa_rfda,
+CPA_-_Complaints/Cases_Declared_False/Unsubstantiated cpa_decl_false,
+CPA_-_Complaints_Received/Alleged cpa_compl_received,
+CPA_-_No_of_Departmental_Enquiries cpa_dep_enq,
+CPA_-_No_of_Magisterial_Enquiries cpa_magis_enq,
+CPA-_Cases_Sent_for_Trials/Charge-sheeted cpa_send_trial,
+CPA-_No_of_Judicial_Enquiries cpa_judic_enq,
+
+CPB_-_Police_Personnel_Acquitted cpb_acquitted,
+CPB_-_Police_Personnel_Convicted cpb_convictted,
+CPB_-_Police_Personnel_sent_up_for_Trial cpb_sent_trial,
+CPB_-_Police_Personnel_Trial_Completed cpb_trial_completed,
+CPB-_Police_Personnel_Cases_Withdrawn_or_Otherwise_disposed_of cpb_withd_disposed,
+
+CPC_-_Police_personnel_Cases_Trial_Completed cpc_trial_completed,
+CPC_-_Police_Personnel_Cases_Withdrawn_or_Otherwise_disposed_of cpc_withd_disposed,
+CPC_-_Police_Personnel_Disciplinary_Action_Initiated cpc_disci_act_init,
+CPC_-_Police_Personnel_Dismissal/Removal_from_Service cpc_dismissal,
+CPC_-_Police_Personnel_Major_Punishment_awarded cpc_major_punish_award,
+CPC_-_Police_Personnel_Minor_Punishment_awarded cpc_minor_punish_award
+
+FOR TABLE 3
+======================================
+﻿Area_Name areaname,
+Year year,
+Group_Name group,
+Sub_Group_Name subgroup,
+Persons_Acquitted per_acquitted,
+Persons_against_whom_cases_Compounded_or_Withdrawn per_case_withd,
+Persons_Arrested arrested,
+Persons_Chargesheeted chargesheeted,
+Persons_Convicted convicted,
+Persons_in_Custody_or_on_Bail_during_Investigation_at_Year_beginning inves_beg,
+Persons_in_Custody_or_on_Bail_during_Investigation_at_Year_end inves_end,
+Persons_in_Custody_or_on_Bail_during_Trial_at_Year_End trial_end,
+Persons_Released_or_Freed_by_Police_or_Magistrate_before_Trial_for_want_of_evidence_or_any_other_reason per_without_trial,
+Persons_Trial_Completed trial_completed,
+Persons_under_Trial_at_Year_beginning trial_year_beg,
+Total_Persons_under_Trial tot_under_trial
+
+

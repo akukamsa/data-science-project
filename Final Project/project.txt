@@ -1,0 +1,163 @@
+create database crimes
+use crimes;
+create table victimrape
+(areaname string
+year string
+subgroup string
+reported int
+above_50_yrs int
+btw_10_14_yrs int
+btw_14_18_yrs int
+btw_18_30_yrs int
+btw_30_50_yrs int
+total int
+upto_10_yrs int)
+row format delimited
+fields terminated by ',';
+create table policecomplaint(
+areaname string,
+year string,
+subgroup string,
+cpa_registered int,
+cpa_rfda int,
+cpa_decl_false int,
+cpa_compl_received int,
+cpa_dep_enq int,
+cpa_magis_enq int,
+cpa_send_trial int,
+cpa_judic_enq int,
+cpb_acquitted int,
+cpb_convictted int,
+cpb_sent_trial int,
+cpb_trial_completed int,
+cpb_withd_disposed int,
+cpc_trial_completed int,
+cpc_withd_disposed int,
+cpc_disci_act_init int,
+cpc_dismissal int,
+cpc_major_punish_award int,
+cpc_minor_punish_award int)
+row format delimited
+fields terminated by ',';
+create table arrest(
+areaname string,
+year string,
+grp string,
+subgroup string,
+per_acquitted int,
+per_case_withd int,
+arrested int,
+chargesheeted int,
+convicted int,
+inves_beg int,
+inves_end int,
+trial_end int,
+per_without_trial int,
+trial_completed int,
+trial_year_beg int,
+tot_under_trial int)
+row format delimited
+fields terminated by ',';
+load data local inpath 'project/43_Arrests_under_crime_against_women.csv' into table arrest;
+create table 1_total_count as select areaname,sum(above_50_yrs) as col1,sum(btw_10_14_yrs) as col2,sum(btw_14_18_yrs) as col3,sum(btw_18_30_yrs) as col4,sum(btw_30_50_yrs) as col5,sum(upto_10_yrs) as col6 from victimrape where subgroup='Total Rape Victims' group by areaname;
+create table query_1 as select sum(col1) as above_50,sum(col2) as btw_10_14,sum(col3) as btw_14_18,sum(col4) as btw_18_30,sum(col5) as btw_30_50,sum(col6) as upto_10 from 1_total_count;
+select case when e3.res3 > e3.upto_10  then e3.res3 else e3.upto_10 end as res4
+from  
+(select upto_10,case when e2.res2 > e2.btw_30_50 then e2.res2 else e2.btw_30_50  end res3
+from
+(select btw_30_50,upto_10,case when e1.res1 > e1.btw_18_30 then e1.res1 else e1.btw_18_30 end res2
+from 
+(select btw_18_30,btw_30_50,upto_10,case when e.res >e.btw_14_18 then e.res else btw_14_18 end as res1
+from 
+(select btw_14_18,btw_18_30,btw_30_50,upto_10,case when above_50>btw_10_14 then above_50 
+else btw_10_14 end res from query_1)e)e1)e2)e3;
+create table 2_sum_grp as select grp,sum(per_acquitted) as sum_per from arrest where not grp in ('Total Crime Against Women','') group by grp;
+create table query_2 as select * from 2_sum_grp where sum_per not in ('NULL');
+create table query_3 as select areaname,sum(cpa_decl_false)/sum(cpa_compl_received) as ratio_decl_false from policecomplaint where areaname not in ('') group by areaname order by ratio_decl_false desc limit 36 ;
+create table query_4 as select areaname,sum(cpa_compl_received) as total_complaint from policecomplaint where areaname not in ('') group by areaname order by total_complaint desc limit 10;
+create table query_5 as select e.areaname,((col2-col1)/col1)*100 as rise_decrease from (select areaname , cpa_compl_received as col1 from policecomplaint where year = '2009')e join (select areaname, cpa_compl_received as col2 from policecomplaint where year='2010')d where e.areaname=d.areaname and not col1 = 0;
+create table query_6 as select u.areaname, u.grp, u.ast
+from
+(select areaname,grp, sum(arrested) as ast from arrest where areaname='Mizoram' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Meghalaya' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Sikkim' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Punjab' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Andaman & Nicobar Islands' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Manipur' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Tamil Nadu' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Rajasthan' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Jharkhand' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Haryana' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Tripura' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Karnataka' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Daman & Diu' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Uttar Pradesh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Himachal Pradesh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Nagaland' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Arunachal Pradesh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Assam' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Kerala' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Madhya Pradesh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Dadra & Nagar Haveli' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Puducherry' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Uttarakhand' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Odisha' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Jammu & Kashmir' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Andhra Pradesh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Gujarat' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Maharashtra' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Goa' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Chandigarh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Chhattisgarh' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Bihar' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Delhi' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='Lakshadweep' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+union all
+select areaname,grp, sum(arrested) as ast from arrest where areaname='West Bengal' and grp not in('Total Crime Against Women','') group by grp,areaname order by ast DESC limit 2
+)u
+ order by u.areaname, u.ast DESC limit 100;
+create table query_7 as select areaname, sum(arrested) as arst from arrest where grp='Total Crime Against Women' group by areaname order by arst desc limit 4;
+create table query_8 as select e.areaname,((col2-col1)/col1)*100 as rise_decrease from (select areaname , arrested as col1 from arrest where year = '2009' and grp='Total Crime Against Women')e join (select areaname,arrested as col2 from arrest where year ='2010' and grp='Total Crime Against Women')d where e.areaname=d.areaname and not col1 = 0 order by rise_decrease desc limit 100;
+create table query_9 as select areaname, sum(cpb_trial_completed)/sum(cpb_sent_trial) as ratio_comp from policecomplaint where areaname not in ('') group by areaname order by ratio_comp desc limit 100;
+create table query_10 as select areaname, sum(cpa_compl_received)/sum(cpa_registered) received_registered from policecomplaint where areaname not in ('') group by areaname order by received_registered DESC limit 100;
+create table query_11 as select year,max(cpc_dismissal) from policecomplaint  where year not in ('') group by year order by year limit 10;
+create table query_12 as select areaname, sum(cpc_major_punish_award) as major_punishment from policecomplaint group by areaname order by major_punishment desc limit 5;
+create table query_13 as  select areaname, sum(cpc_dismissal) as dismissal from policecomplaint group by areaname order by dismissal limit 5;
+create table query_14 as select areaname, sum(total) as tot from victimrape where subgroup='Victims of Incest Rape' group by areaname order by tot desc limit 100;
+create table query_17 as select areaname,sum(per_without_trial) as charge from arrest where areaname not in ('') group by areaname order by charge limit 100;
+create table query_18 as select areaname,sum(chargesheeted) as charge from arrest where areaname not in ('') group by areaname order by charge limit 100;
+create table query_20 as select areaname,sum(chargesheeted) as charge from arrest where areaname not in ('') group by areaname order by charge DESC limit 10;
+

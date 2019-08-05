@@ -1,0 +1,69 @@
+create database crimes
+
+use crimes;
+
+create table victimrape
+(areaname string
+year string
+subgroup string
+reported int
+above_50_yrs int
+btw_10_14_yrs int
+btw_14_18_yrs int
+btw_18_30_yrs int
+btw_30_50_yrs int
+total int
+upto_10_yrs int)
+row format delimited
+fields terminated by ',';
+
+create table policecomplaint(
+areaname string,
+year string,
+subgroup string,
+cpa_registered int,
+cpa_rfda int,
+cpa_decl_false int,
+cpa_compl_received int,
+cpa_dep_enq int,
+cpa_magis_enq int,
+cpa_send_trial int,
+cpa_judic_enq int,
+cpb_acquitted int,
+cpb_convictted int,
+cpb_sent_trial int,
+cpb_trial_completed int,
+cpb_withd_disposed int,
+cpc_trial_completed int,
+cpc_withd_disposed int,
+cpc_disci_act_init int,
+cpc_dismissal int,
+cpc_major_punish_award int,
+cpc_minor_punish_award int)
+row format delimited
+fields terminated by ',';
+
+
+create table arrest(
+areaname string,
+year string,
+grp string,
+subgroup string,
+per_acquitted int,
+per_case_withd int,
+arrested int,
+chargesheeted int,
+convicted int,
+inves_beg int,
+inves_end int,
+trial_end int,
+per_without_trial int,
+trial_completed int,
+trial_year_beg int,
+tot_under_trial int)
+row format delimited
+fields terminated by ',';
+
+load data local inpath 'project/43_Arrests_under_crime_against_women.csv' into table arrest;
+load data local inpath 'project/25_Complaints_against_police.csv' into table policecomplaint;
+load data local inpath 'project/20_Victims_of_rape.csv' into table victimrape;
